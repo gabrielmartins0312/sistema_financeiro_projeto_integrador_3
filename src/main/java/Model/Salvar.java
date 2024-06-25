@@ -2,15 +2,21 @@ package Model;
 
 import java.sql.Date;
 
-public class ValorSalvo {
+public class Salvar {
+    private int idSalvo;
     private double valorTotal;
     private Date dataInicio;
     private Date dataFim;
 
-    public ValorSalvo(double valorTotal, Date dataInicio, Date dataFim) {
+    public Salvar(int idSalvo, double valorTotal, Date dataInicio, Date dataFim) {
+        this.idSalvo = idSalvo;
         this.valorTotal = valorTotal;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
+    }
+
+    public int getIdSalvo() {
+        return idSalvo;
     }
 
     public double getValorTotal() {

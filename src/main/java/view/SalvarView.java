@@ -1,8 +1,9 @@
 package view;
 
 import javax.swing.*;
+import controller.SalvarController;
 import controller.CadastroController;
-import Model.ValorSalvo;
+import Model.Salvar;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,13 +16,16 @@ public class SalvarView extends JFrame {
     private JTextField dataFimField;
     private JButton salvarButton;
     private JButton listarButton;
-    private JList<ValorSalvo> valoresSalvosList;
-    private DefaultListModel<ValorSalvo> listModel;
+    private JButton excluirButton;
+    private JList<Salvar> valoresSalvosList;
+    private DefaultListModel<Salvar> listModel;
+    private SalvarController salvarController;
     private CadastroController cadastroController;
     private String nome;
 
     public SalvarView(String nome) {
         this.nome = nome;
+        salvarController = new SalvarController();
         cadastroController = new CadastroController();
 
         setTitle("Salvar Valor Total");
@@ -33,6 +37,8 @@ public class SalvarView extends JFrame {
         dataFimField = new JTextField();
         salvarButton = new JButton("Salvar");
         listarButton = new JButton("Listar Valores Salvos");
+        excluirButton = new JButton("Excluir Valor Salvo");
+
         listModel = new DefaultListModel<>();
         valoresSalvosList = new JList<>(listModel);
         JScrollPane listScrollPane = new JScrollPane(valoresSalvosList);
@@ -45,8 +51,12 @@ public class SalvarView extends JFrame {
         inputPanel.add(salvarButton);
         inputPanel.add(listarButton);
 
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.add(excluirButton, BorderLayout.SOUTH);
+
         add(inputPanel, BorderLayout.NORTH);
         add(listScrollPane, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
 
         salvarButton.addActionListener(new ActionListener() {
             @Override
@@ -58,7 +68,7 @@ public class SalvarView extends JFrame {
 
                     int confirm = JOptionPane.showConfirmDialog(SalvarView.this, "Deseja salvar o valor total?", "Confirmar", JOptionPane.YES_NO_OPTION);
                     if (confirm == JOptionPane.YES_OPTION) {
-                        cadastroController.salvarTotalCaixa(valorTotal, dataInicio, dataFim, nome);
+                        salvarController.salvarTotalCaixa(valorTotal, dataInicio, dataFim, nome);
                         JOptionPane.showMessageDialog(SalvarView.this, "Valor total salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (IllegalArgumentException ex) {
@@ -73,14 +83,26 @@ public class SalvarView extends JFrame {
                 atualizarListaValoresSalvos();
             }
         });
+
+        excluirButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedIndex = valoresSalvosList.getSelectedIndex();
+                if (selectedIndex != -1) {
+                    Salvar selectedValue = valoresSalvosList.getSelectedValue();
+                    int idSalvo = selectedValue.getIdSalvo();
+                    salvarController.excluirValorSalvo(idSalvo);
+                    atualizarListaValoresSalvos();
+                }
+            }
+        });
     }
 
     private void atualizarListaValoresSalvos() {
         listModel.clear();
-        List<ValorSalvo> valoresSalvos = cadastroController.listarValoresSalvos(nome);
-        for (ValorSalvo valor : valoresSalvos) {
+        List<Salvar> valoresSalvos = salvarController.listarValoresSalvos(nome);
+        for (Salvar valor : valoresSalvos) {
             listModel.addElement(valor);
         }
     }
-    
 }
