@@ -17,6 +17,7 @@ public class CadastroView extends JFrame {
     private JTextField descricaoField;
     private JButton addButton;
     private JButton deleteButton;
+    private JButton salvarButton;
     private JLabel totalCaixaLabel;
     private CadastroController cadastroController;
     private String nome;
@@ -40,8 +41,9 @@ public class CadastroView extends JFrame {
 
         addButton = new JButton("Adicionar");
         deleteButton = new JButton("Excluir");
+        salvarButton = new JButton("Salvar Valor Total");
 
-        JPanel inputPanel = new JPanel(new GridLayout(5, 2));
+        JPanel inputPanel = new JPanel(new GridLayout(6, 2));
         inputPanel.add(new JLabel("Entrada:"));
         inputPanel.add(entradaField);
         inputPanel.add(new JLabel("Saída:"));
@@ -50,6 +52,7 @@ public class CadastroView extends JFrame {
         inputPanel.add(descricaoField);
         inputPanel.add(addButton);
         inputPanel.add(deleteButton);
+        inputPanel.add(salvarButton);
 
         totalCaixaLabel = new JLabel("Total de Caixa: R$ 0.00");
         inputPanel.add(new JLabel());
@@ -80,6 +83,13 @@ public class CadastroView extends JFrame {
                     cadastroController.excluirCadastro(idCadastro);
                     atualizarLista();
                 }
+            }
+        });
+
+        salvarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SalvarView(nome).setVisible(true);
             }
         });
 
